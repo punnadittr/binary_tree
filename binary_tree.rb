@@ -1,5 +1,5 @@
 class Node
-  attr_accessor :parent, :left, :right
+  attr_accessor :left, :right
 
   def initialize(value = nil)
     @value = value
@@ -13,6 +13,8 @@ class Node
 end
 
 class Tree
+  attr_accessor :root
+
   def initialize
     @root = nil
   end
@@ -57,22 +59,45 @@ class Tree
     array.each do |num|
       insert num
     end
-    @temp_node = nil
+  end
+
+  def dfs(val, node = @root)
+    stack = []
+    loop do
+      if node != nil
+        stack << node
+        node = node.left
+      else
+        return if stack.empty?
+        node = stack.pop
+        return node if node.value == val
+        node = node.right
+      end
+    end
+  end
+
+  def dfs_rec(val = nil, node = @root)
+    return if node.nil?
+    print node if node.value == val
+    dfs_rec(val, node.left)
+    dfs_rec(val, node.right)
+    end
   end
 
   def bfs(val)
-    array = []
-    array << @root
-    while array.empty? != true
-      current = array[0]
+    stack = []
+    stack << @root
+    while stack.empty? != true
+      current = stack[0]
       return current if current.value == val
-      array << current.left if current.left.nil? != true
-      array << current.right if current.right.nil? != true
-      array.shift
+      stack << current.left if current.left.nil? != true
+      stack << current.right if current.right.nil? != true
+      stack.shift
     end
     nil
   end
 end
 
 mytree = Tree.new
-mytree.build_tree((1..5).to_a.shuffle!)
+array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324].shuffle!
+mytree.build_tree(array)
